@@ -1,5 +1,6 @@
 # cyao2pdf
 Convert documents to PDF
+
 "chow" "two" p.d.f. - Cloud, Yet Another Office 2 PDF
 
 ## Introduction
@@ -35,9 +36,10 @@ Using curl to convert a file to pdf
 	curl -X POST -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
 	
 	if using password, however ssl is not configured
-	url -X POST -u user:password -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
+	
+	curl -X POST -u user:password -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
 
 ## Notes
 * it might make sense to use a Dockerfile to build the java app
 * disclaimer: written with one handed typing due to holding a newborn during vacation  : )
-** yes, that IS slow
+	* yes, that IS slow
