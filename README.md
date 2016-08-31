@@ -13,13 +13,16 @@ Using curl to convert a file to pdf
 
 
 	cd topdf
+
 	mvn package
 
  2. build the docker image
 
 
 	cp target/topdf-0.0.1-SNAPSHOT.jar ../docker
+
 	cd ../docker
+
     docker build -t mirsaes/cyao2pdf:beta ./
 	
 
