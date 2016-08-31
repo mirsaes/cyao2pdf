@@ -32,11 +32,13 @@ RUN \
 
 WORKDIR /topdf
 
+# add the webapp
 ADD \
-	./topdf/topdf-${topdf_version}.jar /topdf/topdf.jar
+	./topdf-${topdf_version}.jar /topdf/topdf.jar
 
+# add the webapps configuration (by default just sample.properties)
 ADD \
-	./topdf/*.properties /topdf/
+	./*.properties /topdf/
 
 # expose webapp listening on 8080
 EXPOSE 8080

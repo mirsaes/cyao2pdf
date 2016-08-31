@@ -64,6 +64,7 @@ class LiveConverterController
 		// supply a stream back, but delete the generated file on close
 		try
 		{
+			// delete on close is "best effort", should have background timer deleting older files..
 			InputStreamResource isr = new InputStreamResource(new DeleteOnCloseFileInputStream(pdfFileName));
 			return new ResponseEntity<>(isr, HttpStatus.CREATED);
 		} catch (FileNotFoundException ex)
