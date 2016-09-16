@@ -65,7 +65,7 @@ class LiveConverterController
 			logger.warn("unable to convert file", ex);
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		} finally {
-			logger.info("convertTimeMs=" + (System.nanoTime() - startTimeNs) * 1000 + ",srcExtension=" + srcExtension
+			logger.info("convertTimeMs=" + (System.nanoTime() - startTimeNs) / 1000 + ",srcExtension=" + srcExtension
 					+ ", fileSizeBytes=" + fileSizeBytes + ",isError="+isError);
 		}
 
