@@ -9,14 +9,15 @@ ENV topdf_version 0.0.1-SNAPSHOT
 MAINTAINER mirsaes
 
 # make sure "stuff" is up to date
+# install / update libre office
+# install jre for app
 RUN \
 	apt-get update && \
-	apt-get -y upgrade
-
-
-#install / update libre office
-RUN \
-	apt -y install libreoffice
+	apt-get -y upgrade && \
+	apt-get -y install libreoffice && \
+	apt-get -y install openjdk-8-jre && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # above is "base image"
 
@@ -26,8 +27,6 @@ RUN \
 
 # need java for open office
 #https://www.atlantic.net/community/howto/install-java-jre-jdk-on-ubuntu-16-04/
-RUN \
-	apt -y install openjdk-8-jre
 #	apt -y install openjdk-8-jdk
 
 WORKDIR /topdf

@@ -51,14 +51,22 @@ class LiveConverterController
 		if (file.isEmpty() || StringUtils.isEmpty(srcExtension))
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+		long fileSizeBytes=file.getSize();
+		long startTimeNs = System.nanoTime();
+		boolean isError = false;
+		
 		final String pdfFileName;
 		try
 		{
 			pdfFileName = convertToPDF(file.getInputStream(), srcExtension);
 		} catch (Exception ex)
 		{
+			isError = true;
 			logger.warn("unable to convert file", ex);
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		} finally {
+			logger.info("convertTimeMs=" + (System.nanoTime() - startTimeNs) * 1000 + ",srcExtension=" + srcExtension
+					+ ", fileSizeBytes=" + fileSizeBytes + ",isError="+isError);
 		}
 
 		// supply a stream back, but delete the generated file on close
@@ -71,6 +79,8 @@ class LiveConverterController
 		{
 			logger.warn("unable to convert file", ex);
 			return new ResponseEntity<>(HttpStatus.GONE);
+		} finally {
+			
 		}
 	}
 
