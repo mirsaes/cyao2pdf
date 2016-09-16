@@ -37,7 +37,10 @@ class DeleteOnCloseFileInputStream extends FileInputStream
 				// do nothing
 			} finally
 			{
-				fs.close();
+				// we actually want to keep it open
+				// it might be expensive to keep open/close
+				// and sometimes this throws exceptions
+				//fs.close();
 			}
 		}
 	}
