@@ -4,7 +4,6 @@ FROM ubuntu:16.04
 
 #red hat (rpm) via yum
 #FROM centos:6
-ENV topdf_version 0.0.1-SNAPSHOT
 
 MAINTAINER mirsaes
 
@@ -33,11 +32,11 @@ WORKDIR /topdf
 
 # add the webapp
 ADD \
-	./topdf-${topdf_version}.jar /topdf/topdf.jar
+	./target/topdf.jar /topdf/topdf.jar
 
 # add the webapps configuration (by default just sample.properties)
 ADD \
-	./*.properties /topdf/
+	./docker/*.properties /topdf/
 
 # expose webapp listening on 8080
 EXPOSE 8080

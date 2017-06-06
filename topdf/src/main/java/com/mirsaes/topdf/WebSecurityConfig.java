@@ -12,10 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 {
-	@Value("{security.user.name:user}")
+	@Value("${security.user.name:user}")
 	private String userName;
 
-	@Value("{security.user.password:password}")
+	@Value("${security.user.password:password}")
 	private String password;
 
 	@Value("${security.enabled:false}")
