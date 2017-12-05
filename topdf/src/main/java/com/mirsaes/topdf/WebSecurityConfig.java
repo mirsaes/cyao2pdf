@@ -24,12 +24,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
-		// enable test end point to be open
-		http.antMatcher("/live/test")//
-				.csrf().disable()//
-				.authorizeRequests().antMatchers("/live/test")//
-				.permitAll();
-
 		// if security is not enabled, bypass security
 		// otherwise use basic auth
 		if (Boolean.FALSE == securityEnabled)
@@ -40,10 +34,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 					.permitAll();
 		} else
 		{
-			http.authorizeRequests().antMatchers("/").permitAll()//
-					.anyRequest().authenticated()//
-					.and().httpBasic().realmName("cyao2pdf")//
-					.and().logout().permitAll();
+			// protect all except previously allowed with username/password
+			http.csrf().disable()
+				.authorizeRequests()
+				.antMatchers("/live/test").permitAll()
+				.anyRequest().authenticated()//
+				.and().httpBasic().realmName("cyao2pdf")//
+				.and().logout().permitAll();
 		}
 
 	}
