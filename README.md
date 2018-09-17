@@ -10,33 +10,32 @@ The docker image exposes a REST'ish service that connects users to libreoffice "
 Using curl to convert a file to pdf
 
  1. build the java app
-
+	
 
 	cd topdf
 
 	mvn package
 
  2. build the docker image
-
-
+	
 
  	docker build -t mirsaes/cyao2pdf:beta ./
 	
 
  3. launch the docker image
-
+	
 
 	docker run -p 8080:8080 mirsaes/cyao2pdf:beta
 
 
  4. use curl to convert a file to pdf
-
+	
 
 	curl -X POST -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
-	
+
 
 if configured to use a password use the below, however ssl is not configured on the server
-	
+		
 
 	curl -X POST -u user:password -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
 	
@@ -49,6 +48,3 @@ This might be useful when using Amazon S3 and [Temporary Credentials via Query S
 
 ## Notes
 * wanted to use spotify's dockerfile-maven-plugin to automate the docker build, but it has a few issues still
-* it might make sense to use a Dockerfile to build the java app
-* disclaimer: written with one handed typing due to holding a newborn during vacation  : )
-	* yes, that IS slow

@@ -8,7 +8,8 @@ import java.io.InputStream;
 import java.util.Scanner;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -17,7 +18,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class ConverterService
 {
-	private static final Logger logger = Logger.getLogger(ConverterService.class);
+	private static final Logger logger = LogManager.getLogger(ConverterService.class);
 	
 	@Value("${upload.dir}")
 	private String uploadDir;

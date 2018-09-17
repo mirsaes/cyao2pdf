@@ -3,9 +3,9 @@ package com.mirsaes.topdf.converter.live;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Optional;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping(path = "/live")
 class LiveConverterController
 {
-	private static final Logger logger = Logger.getLogger(LiveConverterController.class);
+	private static final Logger logger = LogManager.getLogger(LiveConverterController.class);
 
 	protected final ConverterService converterService;
 
