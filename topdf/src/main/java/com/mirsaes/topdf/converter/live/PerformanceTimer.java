@@ -9,7 +9,6 @@ public class PerformanceTimer
 	public void reset()
 	{
 		deltaTimeMs = 0;
-
 	}
 
 	public void start()
@@ -33,6 +32,5 @@ public class PerformanceTimer
 
 		isRunning = false;
 		return deltaTimeMs;
-
 	}
 }
