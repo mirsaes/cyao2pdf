@@ -1,6 +1,7 @@
 #debian
 #FROM ubuntu:14.04
-FROM ubuntu:16.04
+#FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 #red hat (rpm) via yum
 #FROM centos:6
@@ -10,14 +11,14 @@ MAINTAINER mirsaes
 # make sure "stuff" is up to date
 # install / update libre office
 # install jre for app
+# ubuntu 18 has jre 10 installed by default
 RUN \
 	apt-get update && \
 	apt-get -y upgrade && \
 	apt-get -y install libreoffice && \
-	apt-get -y install openjdk-8-jre && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+RUN java -version
 # above is "base image"
 
 # now the "app/web service image"
