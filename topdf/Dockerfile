@@ -7,6 +7,8 @@ LABEL maintainer="mirsaes"
 # ubuntu 18.04 has jre 11 installed by default
 RUN \
 	apt-get update && \
+#	apt-get -y install software-properties-common && \
+#	add-apt-repository ppa:libreoffice/ppa && \
 	apt-get -y upgrade && \
 	apt-get -y install libreoffice && \
 	apt-get clean && \

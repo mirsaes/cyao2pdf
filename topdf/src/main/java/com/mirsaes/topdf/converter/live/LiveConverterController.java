@@ -12,8 +12,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,7 +37,7 @@ class LiveConverterController
 	@Value("${security.enabled:false}")
 	private Boolean securityEnabled;
 
-	@RequestMapping(path = "health", method = RequestMethod.GET, produces = "application/json")
+	@GetMapping(path = "health", produces = "application/json")
 	@ResponseBody()
 	public Object health(@RequestParam("testConvert") Optional<Boolean> testConvert)
 	{
@@ -58,14 +59,14 @@ class LiveConverterController
 		return resp;
 	}
 
-	@RequestMapping(path = "test", method = RequestMethod.GET, produces = "text/html")
+	@GetMapping(path = "test", produces = "text/html")
 	@ResponseBody()
 	public String test()
 	{
 		return "tested. upload dir=" + converterService.getUploadDir() + ", security=" + securityEnabled;
 	}
 
-	@RequestMapping(path = "urltopdf", method = RequestMethod.POST, produces = "application/pdf")
+	@PostMapping(path = "urltopdf", produces = "application/pdf")
 	public ResponseEntity<InputStreamResource> urltopdf(@RequestParam("name") String name,
 			@RequestParam("file") String file)
 	{
@@ -106,13 +107,12 @@ class LiveConverterController
 			}
 			logger.info("convertTimeMs=" + perfTimer.read() + ",srcExtension=" + srcExtension + ", url=" + file
 					+ ",isError=" + isError);
-
 		}
 
 		return sendPdfResponse(pdfFileName);
 	}
 
-	@RequestMapping(path = "topdf", method = RequestMethod.POST, produces = "application/pdf")
+	@PostMapping(path = "topdf", produces = "application/pdf")
 	public ResponseEntity<InputStreamResource> topdf(@RequestParam("name") String name,
 			@RequestParam("file") MultipartFile file)
 	{

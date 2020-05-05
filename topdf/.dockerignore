@@ -1,1 +1,6 @@
 samples/
+src/
+.classpath
+.settings
+.factorypath
+

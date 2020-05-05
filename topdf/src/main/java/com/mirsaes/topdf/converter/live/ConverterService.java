@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.UUID;
@@ -16,63 +17,96 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 
 @Service
-public class ConverterService
-{
+public class ConverterService {
 	private static final Logger logger = LogManager.getLogger(ConverterService.class);
-	
+
 	@Value("${upload.dir}")
 	private String uploadDir;
 
-	public boolean textConvert(final String text)
-	{
+	public boolean textConvert(final String text) {
 		ByteArrayInputStream bais = new ByteArrayInputStream(text.getBytes());
 
-		try
-		{
+		try {
 			String generatedPDFFileName = convertToPDF(bais, ".txt");
-			if (!StringUtils.isEmpty(generatedPDFFileName))
-			{
+			if (!StringUtils.isEmpty(generatedPDFFileName)) {
 				// delete file
 				FileUtils.safeDeleteFile(generatedPDFFileName);
 				return true;
 			}
-		} catch (UnableToConvertException e)
-		{
+		} catch (UnableToConvertException e) {
 			logger.error("failed to convert test string. string=[" + text + "]", e);
 		}
 
 		return false;
 	}
 
-	public String getVersionInfo()
-	{
-		File workingDir = new File(uploadDir);
+	public String getVersionInfo() {
 		String versionInfo = "";
 
-		try
-		{
-			Process p = Runtime.getRuntime().exec(new String[] { "soffice", "--version" }, null, workingDir);
-			Scanner scanner = new Scanner(p.getInputStream());
-			while (scanner.hasNext())
-			{
-				versionInfo += scanner.nextLine();
-				logger.debug(scanner.nextLine());
-			}
+		try {
+			// Process p = new
+			// ProcessBuilder().redirectErrorStream(true).directory(workingDir).command("soffice",
+			// "--headless", "--version").start();
+			ExecReturnData returnData = execProcess(new String[] { "soffice", "--version" });
 
-			int retVal = p.waitFor();
-			scanner.close();
+			versionInfo += returnData.getProcessOutput();
+
 			// 0 is normal
-			if (retVal != 0)
-			{
+			if (returnData.getReturnCode()!= 0) {
 				versionInfo = "unable to get version info";
 			}
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			logger.warn("unable to get version info", e);
 			versionInfo = "unable to get version info";
 		}
 
 		return versionInfo;
+	}
+
+	class ExecReturnData {
+		final String processOutput;
+		int returnCode;
+		ExecReturnData(String processOutput, int returnCode) {
+			this.processOutput = processOutput;
+			this.returnCode=returnCode;
+		}
+		String getProcessOutput()
+		{
+			return processOutput;
+		}
+		int getReturnCode()
+		{
+			return this.returnCode;
+		}
+	}
+
+	private synchronized ExecReturnData execProcess(String [] commandAndArgs) throws IOException, InterruptedException 
+	{
+		File workingDir = new File(uploadDir);
+
+		Process p = Runtime.getRuntime().exec(
+			commandAndArgs, null, workingDir);
+		Scanner scanner = new Scanner(p.getInputStream());
+		StringBuilder processOutput = new StringBuilder();
+
+		while (scanner.hasNext())
+		{
+			final String line = scanner.nextLine();
+			logger.debug(line);
+			processOutput.append(line);
+		}
+
+		int retVal = p.waitFor();
+		scanner.close();
+
+		return new ExecReturnData(processOutput.toString(), retVal);
+	}
+
+	// can only have one instance of soffice running at a time
+	protected int convertLocalFileToPDF(String toConvertFileName) throws IOException,
+			InterruptedException
+	{
+		return execProcess(new String[] { "soffice", "--headless", "--convert-to", "pdf", toConvertFileName }).getReturnCode();
 	}
 
 	// attempt to convert a document using ubuntu alias libreoffice -> soffice
@@ -119,25 +153,19 @@ public class ConverterService
 			// I was working with 3 hours sleep due to newborn, had to kill the
 			// time somehow
 			// likely should use ProcessBuilder instead of Runtime
-			File workingDir = new File(uploadDir);
-			Process p = Runtime.getRuntime().exec(
-					new String[] { "soffice", "--headless", "--convert-to", "pdf", toConvertFileName }, null,
-					workingDir);
-
-			// TODO: if process "hangs", should likely kill the process
-			Scanner scanner = new Scanner(p.getInputStream());
-			while (scanner.hasNext())
-			{
-				logger.debug(scanner.nextLine());
-			}
-
-			int retVal = p.waitFor();
-			scanner.close();
+			int retVal = convertLocalFileToPDF(toConvertFileName);
 			// 0 is normal
 			if (retVal != 0)
 			{
-				throw new UnableToConvertException("UnableToConvert");
+				throw new UnableToConvertException("UnableToConvert. bad return code. retVal="+retVal);
 			}
+
+			// check that file was created..
+			File pdfFile = new File(pdfFileName);
+			if (!pdfFile.exists()) {
+				throw new UnableToConvertException("UnableToConvert. file not generated. pdfFileName="+pdfFileName);
+			}
+
 		} catch (Exception e)
 		{
 			throw new UnableToConvertException("UnableToConvert", e);
