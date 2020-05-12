@@ -25,8 +25,12 @@ Using curl to convert a file to pdf
  3. launch the docker image
 	
 
-	docker run -p 8080:8080 mirsaes/cyao2pdf:beta
+	docker run --rm -p 8080:8080 mirsaes/cyao2pdf:beta
 
+```
+	# run with process reaper and local file used as application.properties to override app settings
+	docker run --init --rm -d -p 8080:8080 --mount 'type=bind,src=/full/path/to/sample.properties,dst=/topdf/application.properties' mirsaes/cyao2pdf:beta
+```
 
  4. use curl to convert a file to pdf
 	
@@ -49,4 +53,20 @@ if configured to use a password use the below, however ssl is not configured on 
 This might be useful when using Amazon S3 and [Temporary Credentials via Query String Request Authentication](http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth) - but that has not been tested.
 
 ## Notes
-* wanted to use spotify's dockerfile-maven-plugin to automate the docker build, but it has a few issues still
+* noted
+
+## Sample Properties
+```
+# whether to use a user pool to convert documents
+convertusers.enabled: true
+
+# number of users to use (users must exist, up to max of 8 users)
+convertusers.count: 4
+
+# username prefix used to form converting username, e.g. cyao2pdf1, cyao2pdf2, etc
+convertusers.username.prefix: cyao2pdf
+
+```
+
+
+
