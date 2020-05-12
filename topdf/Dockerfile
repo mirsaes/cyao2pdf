@@ -10,7 +10,7 @@ RUN \
 #	apt-get -y install software-properties-common && \
 #	add-apt-repository ppa:libreoffice/ppa && \
 	apt-get -y upgrade && \
-	apt-get -y install libreoffice && \
+	apt-get -y install libreoffice sudo && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN java -version
@@ -30,7 +30,31 @@ COPY \
 ADD \
 	./docker/*.properties /topdf/
 
+COPY \
+	./docker/convert.sh /topdf/upload-dir/convert.sh
+
+# add a few available users
+RUN addgroup cyao2pdf && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf1 user" cyao2pdf1 && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf2 user" cyao2pdf2 && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf3 user" cyao2pdf3 && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf4 user" cyao2pdf4 && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf5 user" cyao2pdf5 && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf6 user" cyao2pdf6 && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf7 user" cyao2pdf7 && \
+	adduser --disabled-login --quiet --gecos "cyao2pdf8 user" cyao2pdf8 && \
+	usermod -a -G cyao2pdf cyao2pdf1 && \
+	usermod -a -G cyao2pdf cyao2pdf2 && \
+	usermod -a -G cyao2pdf cyao2pdf3 && \
+	usermod -a -G cyao2pdf cyao2pdf4 && \
+	usermod -a -G cyao2pdf cyao2pdf5 && \
+	usermod -a -G cyao2pdf cyao2pdf6 && \
+	usermod -a -G cyao2pdf cyao2pdf7 && \
+	usermod -a -G cyao2pdf cyao2pdf8 && \
+	chown -R root:cyao2pdf /topdf/upload-dir  && \
+	chmod g+rw /topdf/upload-dir
+
 # expose webapp listening on 8080
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "topdf.jar"]
+CMD ["java", "-jar", "topdf.jar"]

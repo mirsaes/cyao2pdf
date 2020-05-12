@@ -5,7 +5,7 @@
 
 	<groupId>com.mirsaes</groupId>
 	<artifactId>topdf</artifactId>
-	<version>0.0.6-SNAPSHOT</version>
+	<version>0.0.7-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>topdf</name>
@@ -61,26 +61,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-<!-- doesn't work, maybe with 1.2.3?
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>dockerfile-maven-plugin</artifactId>
-				<version>1.2.2</version>
-				<executions>
-					<execution>
-						<id>default</id>
-						<goals>
-							<goal>build</goal>
-							<goal>push</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<repository>mirsaes/cyao2pdf</repository>
-					<tag>${project.version}</tag>
-				</configuration>
-			</plugin>
--->
 		</plugins>
 	</build>
 </project>

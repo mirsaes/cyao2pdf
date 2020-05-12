@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,17 +26,28 @@ public class ConverterService {
 	@Value("${upload.dir}")
 	private String uploadDir;
 
+	@Value("${convertusers.enabled:false}")
+	private boolean convertUsersEnabled;
+
+	@Value("${convertusers.count:4}")
+	private int convertUsersCount;
+
+	@Value("${convertusers.username.prefix:cyao2pdf}")
+	private String convertUsersNamePrefix;
+
+	private static final int MAX_CONVERT_USERS = 8;
+
 	public boolean textConvert(final String text) {
-		ByteArrayInputStream bais = new ByteArrayInputStream(text.getBytes());
+		final ByteArrayInputStream bais = new ByteArrayInputStream(text.getBytes());
 
 		try {
-			String generatedPDFFileName = convertToPDF(bais, ".txt");
+			final String generatedPDFFileName = convertToPDF(bais, ".txt");
 			if (!StringUtils.isEmpty(generatedPDFFileName)) {
 				// delete file
 				FileUtils.safeDeleteFile(generatedPDFFileName);
 				return true;
 			}
-		} catch (UnableToConvertException e) {
+		} catch (final UnableToConvertException e) {
 			logger.error("failed to convert test string. string=[" + text + "]", e);
 		}
 
@@ -47,15 +61,15 @@ public class ConverterService {
 			// Process p = new
 			// ProcessBuilder().redirectErrorStream(true).directory(workingDir).command("soffice",
 			// "--headless", "--version").start();
-			ExecReturnData returnData = execProcess(new String[] { "soffice", "--version" });
+			final ExecReturnData returnData = syncExecProcess(new String[] { "soffice", "--version" });
 
 			versionInfo += returnData.getProcessOutput();
 
 			// 0 is normal
-			if (returnData.getReturnCode()!= 0) {
+			if (returnData.getReturnCode() != 0) {
 				versionInfo = "unable to get version info";
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			logger.warn("unable to get version info", e);
 			versionInfo = "unable to get version info";
 		}
@@ -66,47 +80,105 @@ public class ConverterService {
 	class ExecReturnData {
 		final String processOutput;
 		int returnCode;
-		ExecReturnData(String processOutput, int returnCode) {
+
+		ExecReturnData(final String processOutput, final int returnCode) {
 			this.processOutput = processOutput;
-			this.returnCode=returnCode;
+			this.returnCode = returnCode;
 		}
-		String getProcessOutput()
-		{
+
+		String getProcessOutput() {
 			return processOutput;
 		}
-		int getReturnCode()
-		{
+
+		int getReturnCode() {
 			return this.returnCode;
 		}
 	}
 
-	private synchronized ExecReturnData execProcess(String [] commandAndArgs) throws IOException, InterruptedException 
-	{
-		File workingDir = new File(uploadDir);
+	private ExecReturnData execProcess(final String[] commandAndArgs) throws IOException, InterruptedException {
+		final File workingDir = new File(uploadDir);
 
-		Process p = Runtime.getRuntime().exec(
-			commandAndArgs, null, workingDir);
-		Scanner scanner = new Scanner(p.getInputStream());
-		StringBuilder processOutput = new StringBuilder();
+		final Process p = Runtime.getRuntime().exec(commandAndArgs, null, workingDir);
+		final Scanner scanner = new Scanner(p.getInputStream());
+		final StringBuilder processOutput = new StringBuilder();
 
-		while (scanner.hasNext())
-		{
+		while (scanner.hasNext()) {
 			final String line = scanner.nextLine();
 			logger.debug(line);
 			processOutput.append(line);
 		}
 
-		int retVal = p.waitFor();
+		final int retVal = p.waitFor();
 		scanner.close();
 
 		return new ExecReturnData(processOutput.toString(), retVal);
 	}
 
+	private synchronized ExecReturnData syncExecProcess(final String[] commandAndArgs)
+			throws IOException, InterruptedException {
+		return execProcess(commandAndArgs);
+	}
+
+	private static Lock[] activeConversions = new Lock[MAX_CONVERT_USERS];
+
+	static {
+		for (int i = 0; i < MAX_CONVERT_USERS; i++) {
+			activeConversions[i] = new ReentrantLock();
+		}
+	}
+
+	private ExecReturnData tryLockExec(final String toConvertFileName, final long lockWaitMs)
+			throws InterruptedException, IOException {
+		for (int i = 0; i < MAX_CONVERT_USERS && i < convertUsersCount; i++) {
+
+			final Lock lock = activeConversions[i];
+			final boolean isAcquired = lock.tryLock(lockWaitMs, TimeUnit.MILLISECONDS);
+			if (isAcquired) {
+				try {
+					final String userName = convertUsersNamePrefix + Integer.toString(i + 1);
+					logger.info("trying to convert. user={},toConvertFileName={}", userName, toConvertFileName);
+					return execProcess(new String[] { "sh", "convert.sh", userName, toConvertFileName });
+				} finally {
+					lock.unlock();
+				}
+			}
+		}
+		return null;
+	}
+
 	// can only have one instance of soffice running at a time
-	protected int convertLocalFileToPDF(String toConvertFileName) throws IOException,
-			InterruptedException
+	protected int convertLocalFileToPDF(final String toConvertFileName) throws IOException, InterruptedException 
 	{
-		return execProcess(new String[] { "soffice", "--headless", "--convert-to", "pdf", toConvertFileName }).getReturnCode();
+		if (!convertUsersEnabled)
+		{
+			return syncExecProcess(new String[] { "soffice", "--headless", "--convert-to", "pdf", toConvertFileName })
+					.getReturnCode();
+		}
+
+		// try lock convert
+		long lockWaitMs = 5;
+		final long lockTryMaxWaitMs = 50;
+		final long lockTryIncMs = 5;
+		final long lockStartMs = System.currentTimeMillis();
+		long lastLogMs = System.currentTimeMillis();
+
+		while (true) {
+			final ExecReturnData execReturnData = tryLockExec(toConvertFileName, lockWaitMs);
+			if (execReturnData != null) {
+				return execReturnData.getReturnCode();
+			}
+
+			final long currentTimeMillis = System.currentTimeMillis();
+			final long elapsedTimeMs = (currentTimeMillis - lockStartMs);
+			if (elapsedTimeMs > 5000 && (currentTimeMillis - lastLogMs) > 5000) {
+				lastLogMs = currentTimeMillis;
+				logger.warn("waiting for available converter. toConvertFileName={},elapsedTimeMs={}", toConvertFileName, elapsedTimeMs);
+			}
+
+			if (lockWaitMs < lockTryMaxWaitMs) {
+				lockWaitMs += lockTryIncMs;
+			}
+		}
 	}
 
 	// attempt to convert a document using ubuntu alias libreoffice -> soffice
@@ -126,8 +198,7 @@ public class ConverterService {
 	 * @throws UnableToConvertException
 	 */
 	public String convertToPDF(final InputStream inputStream, final String srcExtension)
-			throws UnableToConvertException
-	{
+			throws UnableToConvertException {
 		// use a unique identified to save upload stream to disk
 		final String uuid = UUID.randomUUID().toString();
 
@@ -141,11 +212,10 @@ public class ConverterService {
 
 		File fileToConvert = null;
 
-		try
-		{
+		try {
 			fileToConvert = new File(toConvertFullFileName);
 
-			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileToConvert));
+			final BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileToConvert));
 			FileCopyUtils.copy(inputStream, stream);
 			stream.close();
 
@@ -153,33 +223,28 @@ public class ConverterService {
 			// I was working with 3 hours sleep due to newborn, had to kill the
 			// time somehow
 			// likely should use ProcessBuilder instead of Runtime
-			int retVal = convertLocalFileToPDF(toConvertFileName);
+			final int retVal = convertLocalFileToPDF(toConvertFileName);
 			// 0 is normal
-			if (retVal != 0)
-			{
-				throw new UnableToConvertException("UnableToConvert. bad return code. retVal="+retVal);
+			if (retVal != 0) {
+				throw new UnableToConvertException("UnableToConvert. bad return code. retVal=" + retVal);
 			}
 
 			// check that file was created..
-			File pdfFile = new File(pdfFileName);
+			final File pdfFile = new File(pdfFileName);
 			if (!pdfFile.exists()) {
-				throw new UnableToConvertException("UnableToConvert. file not generated. pdfFileName="+pdfFileName);
+				throw new UnableToConvertException("UnableToConvert. file not generated. pdfFileName=" + pdfFileName);
 			}
 
-		} catch (Exception e)
-		{
+		} catch (final Exception e) {
 			throw new UnableToConvertException("UnableToConvert", e);
-		} finally
-		{
+		} finally {
 			// delete the uploaded file
-			if (fileToConvert != null)
-			{
-				try
-				{
+			if (fileToConvert != null) {
+				try {
 					fileToConvert.delete();
-				} catch (Exception ex)
+				} catch (final Exception ex)
 				{
-					logger.warn("unable to delete uploaded file" + uuid, ex);
+					logger.warn("unable to delete uploaded file: {}", uuid, ex);
 				}
 			}
 		}
