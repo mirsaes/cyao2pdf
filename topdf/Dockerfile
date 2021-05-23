@@ -1,14 +1,18 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL maintainer="mirsaes"
 
+# avoid tzone prompts, etc
+ARG DEBIAN_FRONTEND=noninteractive
+
 # make sure "stuff" is up to date
 # install / update libre office
-# ubuntu 18.04 has jre 11 installed by default
+# install jre 11
 RUN \
 	apt-get update && \
 	apt-get -y upgrade && \
-	apt-get -y install libreoffice && \
+	apt-get -y --no-install-recommends install libreoffice && \
+	apt-get -y install openjdk-11-jre-headless && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN java -version
