@@ -68,5 +68,17 @@ convertusers.username.prefix: cyao2pdf
 
 ```
 
+## Versions
+* 0.0.8
+  * Reduced image size, ubuntu 20
+  * Ubuntu 20
+  * LibreOffice
+  * jre 11
+
+* 0.0.7
+  * Basic parallel document conversion support
+  * Ubuntu 18
+  * LibreOffice
+  * jre 11
 
 
