@@ -69,6 +69,10 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.8a
+  * log4helle fix
+  * analysis showed default implementation in 0.0.8 and 0.0.7 should have been unaffected, however if users configured access log logging via property file overrides then it would have been affected
+
 * 0.0.8
   * Reduced image size, ubuntu 20
   * Ubuntu 20
