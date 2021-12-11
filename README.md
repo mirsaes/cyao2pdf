@@ -25,7 +25,7 @@ Using curl to convert a file to pdf
  3. launch the docker image
 	
 
-	docker run --rm -p 8080:8080 mirsaes/cyao2pdf:beta
+	docker run --rm --init -p 8080:8080 mirsaes/cyao2pdf:beta
 
 ```
 	# run with process reaper and local file used as application.properties to override app settings
@@ -70,8 +70,11 @@ convertusers.username.prefix: cyao2pdf
 
 ## Versions
 * 0.0.8a
-  * log4helle fix
+  * log4helle fix, dunkel
   * analysis showed default implementation in 0.0.8 and 0.0.7 should have been unaffected, however if users configured access log logging via property file overrides then it would have been affected
+
+* 0.0.7a
+  * includes updated log4j library to fix exploit
 
 * 0.0.8
   * Reduced image size, ubuntu 20
