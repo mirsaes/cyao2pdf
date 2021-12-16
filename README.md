@@ -69,6 +69,10 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.8b
+  * log4helle fix vengeance
+  * update to include log4j 2.16
+
 * 0.0.8a
   * log4helle fix, dunkel
   * analysis showed default implementation in 0.0.8 and 0.0.7 should have been unaffected, however if users configured access log logging via property file overrides then it would have been affected
@@ -81,6 +85,12 @@ convertusers.username.prefix: cyao2pdf
   * Ubuntu 20
   * LibreOffice
   * jre 11
+
+* 0.0.7b
+  * update to include log4 2.16
+
+* 0.0.7a
+  * update to include log4j 2.15
 
 * 0.0.7
   * Basic parallel document conversion support
