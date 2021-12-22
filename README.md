@@ -69,6 +69,9 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.8c
+* update to include log4j 2.17
+
 * 0.0.8b
   * log4helle fix vengeance
   * update to include log4j 2.16
@@ -86,8 +89,11 @@ convertusers.username.prefix: cyao2pdf
   * LibreOffice
   * jre 11
 
+* 0.0.7c
+  * update to include log4j 2.17
+
 * 0.0.7b
-  * update to include log4 2.16
+  * update to include log4j 2.16
 
 * 0.0.7a
   * update to include log4j 2.15
