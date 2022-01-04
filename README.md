@@ -53,6 +53,7 @@ if configured to use a password use the below, however ssl is not configured on 
 This might be useful when using Amazon S3 and [Temporary Credentials via Query String Request Authentication](http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth) - but that has not been tested.
 
 ## Notes
+* version 0.0.7d includes log4j security fix (2.17.1)
 * version 0.0.7c includes log4j infinite lookup recursion fix (2.17.0)
 * version 0.0.7b includes more exhaustive fix for log4helle vengeance
 * version 0.0.7a updates log4j library to prevent log4helle exploit
