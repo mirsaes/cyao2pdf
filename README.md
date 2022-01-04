@@ -69,8 +69,11 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.8d
+  * security update to include log4j 2.17.1
+
 * 0.0.8c
-* update to include log4j 2.17
+  * security update to include log4j 2.17.0
 
 * 0.0.8b
   * log4helle fix vengeance
@@ -80,14 +83,14 @@ convertusers.username.prefix: cyao2pdf
   * log4helle fix, dunkel
   * analysis showed default implementation in 0.0.8 and 0.0.7 should have been unaffected, however if users configured access log logging via property file overrides then it would have been affected
 
-* 0.0.7a
-  * includes updated log4j library to fix exploit
-
 * 0.0.8
   * Reduced image size, ubuntu 20
   * Ubuntu 20
   * LibreOffice
   * jre 11
+
+* 0.0.7d
+  * security update to include log4j 2.17.1
 
 * 0.0.7c
   * update to include log4j 2.17
@@ -96,6 +99,7 @@ convertusers.username.prefix: cyao2pdf
   * update to include log4j 2.16
 
 * 0.0.7a
+  * includes updated log4j library to fix exploit
   * update to include log4j 2.15
 
 * 0.0.7
