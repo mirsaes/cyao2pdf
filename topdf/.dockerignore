@@ -3,4 +3,5 @@ src/
 .classpath
 .settings
 .factorypath
-
+tests.txt
+test.properties
