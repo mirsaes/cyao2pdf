@@ -69,6 +69,14 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.9
+  * update spring boot to [2.6.6](https://spring.io/blog/2022/03/31/spring-boot-2-6-6-available-now) [LTS](https://spring.io/projects/spring-boot#support)
+  * includes security fix for [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965)
+  * however, was not vulnerable as build uses default for generating executable jar rather than a war
+  * Ubuntu 20.04
+  * LibreOffice 6.4.7.2
+  * jre 11
+
 * 0.0.8d
   * security update to include log4j 2.17.1
 

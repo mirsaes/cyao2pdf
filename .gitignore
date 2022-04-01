@@ -4,3 +4,5 @@ topdf/.project
 topdf/.settings/*
 topdf/bin/*
 .factorypath
+tests.txt
+test.properties
