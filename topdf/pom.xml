@@ -5,7 +5,7 @@
 
 	<groupId>com.mirsaes</groupId>
 	<artifactId>topdf</artifactId>
-	<version>0.0.8d-SNAPSHOT</version>
+	<version>0.0.9</version>
 	<packaging>jar</packaging>
 
 	<name>topdf</name>
