@@ -32,9 +32,14 @@ Using curl to convert a file to pdf
 	docker run --init --rm -d -p 8080:8080 --mount 'type=bind,src=/full/path/to/sample.properties,dst=/topdf/application.properties' mirsaes/cyao2pdf:beta
 ```
  4. check health or run basic tests
+
+```
   curl http://localhost:8080/live/health
+
   curl http://localhost:8080/live/health?testConvert=true
+
   curl http://localhost:8080/live/test
+```
 
  5. use curl to convert a file to pdf
 	
