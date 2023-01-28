@@ -31,8 +31,12 @@ Using curl to convert a file to pdf
 	# run with process reaper and local file used as application.properties to override app settings
 	docker run --init --rm -d -p 8080:8080 --mount 'type=bind,src=/full/path/to/sample.properties,dst=/topdf/application.properties' mirsaes/cyao2pdf:beta
 ```
+ 4. check health or run basic tests
+  curl http://localhost:8080/live/health
+  curl http://localhost:8080/live/health?testConvert=true
+  curl http://localhost:8080/live/test
 
- 4. use curl to convert a file to pdf
+ 5. use curl to convert a file to pdf
 	
 
 	curl -X POST -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
@@ -44,7 +48,7 @@ if configured to use a password use the below, however ssl is not configured on 
 	curl -X POST -u user:password -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
 	
 
-5. use curl to convert a remote file to a pdf
+6. use curl to convert a remote file to a pdf
 
 	curl -X POST -F "name=web.txt" -F "file=https://somesite.com/withatextfile" http://localhost:8080/live/urltopdf
 	
@@ -69,6 +73,13 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.10
+  * update spring boot to [2.7.4](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes)[LTS](https://spring.io/projects/spring-boot#support)
+  * Ubuntu 22.04
+  * LibreOffice 7.3
+  * jre 17
+  * spring 2.7
+
 * 0.0.9
   * update spring boot to [2.6.6](https://spring.io/blog/2022/03/31/spring-boot-2-6-6-available-now) [LTS](https://spring.io/projects/spring-boot#support)
   * includes security fix for [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965)

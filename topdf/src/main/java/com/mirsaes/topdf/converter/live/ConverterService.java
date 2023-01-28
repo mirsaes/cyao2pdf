@@ -42,7 +42,7 @@ public class ConverterService {
 
 		try {
 			final String generatedPDFFileName = convertToPDF(bais, ".txt");
-			if (!StringUtils.isEmpty(generatedPDFFileName)) {
+			if (StringUtils.hasLength(generatedPDFFileName)) {
 				// delete file
 				FileUtils.safeDeleteFile(generatedPDFFileName);
 				return true;
@@ -102,13 +102,20 @@ public class ConverterService {
 		final Scanner scanner = new Scanner(p.getInputStream());
 		final StringBuilder processOutput = new StringBuilder();
 
+		PerformanceTimer perfTimer = new PerformanceTimer();
+		perfTimer.start();
+
 		while (scanner.hasNext()) {
 			final String line = scanner.nextLine();
 			logger.debug(line);
+
 			processOutput.append(line);
 		}
+		long scannerTimeMs = perfTimer.read();
+		perfTimer.reset();
 
 		final int retVal = p.waitFor();
+		logger.debug("waitForProcessTimeMs={}, scannerTimeMs={}", perfTimer.read(), scannerTimeMs);
 		scanner.close();
 
 		return new ExecReturnData(processOutput.toString(), retVal);
@@ -215,10 +222,12 @@ public class ConverterService {
 		try {
 			fileToConvert = new File(toConvertFullFileName);
 
+			PerformanceTimer perfTimer = new PerformanceTimer();
+			perfTimer.start();
 			final BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(fileToConvert));
 			FileCopyUtils.copy(inputStream, stream);
 			stream.close();
-
+			logger.debug("copyTimeMs={}", perfTimer.read());
 			// NOTE: clean this all up and sanity check everything
 			// I was working with 3 hours sleep due to newborn, had to kill the
 			// time somehow
