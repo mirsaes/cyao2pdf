@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL maintainer="mirsaes"
 
@@ -7,12 +7,12 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # make sure "stuff" is up to date
 # install / update libre office
-# install jre 11
+# install jre 17
 RUN \
 	apt-get update && \
 	apt-get -y upgrade && \
 	apt-get -y --no-install-recommends install libreoffice && \
-	apt-get -y install openjdk-11-jre-headless && \
+	apt-get -y install openjdk-17-jre-headless && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN java -version

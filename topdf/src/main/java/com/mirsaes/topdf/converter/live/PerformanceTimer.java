@@ -9,6 +9,7 @@ public class PerformanceTimer
 	public void reset()
 	{
 		deltaTimeMs = 0;
+		startTimeMs=System.currentTimeMillis();
 	}
 
 	public void start()

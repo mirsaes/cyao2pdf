@@ -71,7 +71,7 @@ class LiveConverterController
 			@RequestParam("file") String file)
 	{
 		final String srcExtension = getExtension(name);
-		if (file.isEmpty() || StringUtils.isEmpty(srcExtension))
+		if (file.isEmpty() || !StringUtils.hasLength(srcExtension))
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 		final String pdfFileName;
@@ -119,7 +119,7 @@ class LiveConverterController
 		// TODO: validate inputs exhaustively (name, file)
 		// must have an extension, otherwise conversion will fail
 		final String srcExtension = getExtension(name);
-		if (file.isEmpty() || StringUtils.isEmpty(srcExtension))
+		if (file.isEmpty() || !StringUtils.hasLength(srcExtension))
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 		PerformanceTimer perfTimer = new PerformanceTimer();
