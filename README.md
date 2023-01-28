@@ -79,7 +79,7 @@ convertusers.username.prefix: cyao2pdf
 
 ## Versions
 * 0.0.10
-  * update spring boot to [2.7.4](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes)[LTS](https://spring.io/projects/spring-boot#support)
+  * update spring boot to [2.7.4](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes) [LTS](https://spring.io/projects/spring-boot#support)
   * Ubuntu 22.04
   * LibreOffice 7.3
   * jre 17
