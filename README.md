@@ -78,6 +78,13 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.11
+  * update spring boot to [3.0.6](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes) [Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * Ubuntu 22.04
+  * LibreOffice 7.3
+  * jre 17
+  * spring 3.0
+
 * 0.0.10
   * update spring boot to [2.7.4](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes) [LTS](https://spring.io/projects/spring-boot#support)
   * Ubuntu 22.04
