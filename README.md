@@ -56,8 +56,14 @@ if configured to use a password use the below, however ssl is not configured on 
 6. use curl to convert a remote file to a pdf
 
 	curl -X POST -F "name=web.txt" -F "file=https://somesite.com/withatextfile" http://localhost:8080/live/urltopdf
-	
-	curl -X POST -F "name=test.docx" -F "file=https://interoperability.blob.core.windows.net/files/MS-DOCX/%5bMS-DOCX%5d-200219.docx" http://localhost:8080/live/urltopdf > docx.pdf
+
+odd, this blob share apparently had its permissions locked down, oops
+
+https://interoperability.blob.core.windows.net/files/MS-DOCX/%5bMS-DOCX%5d-200219.docx
+
+so an alternative test file, has been specified in example below
+
+	curl -X POST -F "name=test.docx" -F "file=https://msopenspecs.azureedge.net/files/MS-DOCX/%5bMS-DOCX%5d-230815.docx" http://localhost:8080/live/urltopdf > docx.pdf
 
 This might be useful when using Amazon S3 and [Temporary Credentials via Query String Request Authentication](http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth) - but that has not been tested.
 
