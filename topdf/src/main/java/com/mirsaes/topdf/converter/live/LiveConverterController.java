@@ -45,7 +45,7 @@ class LiveConverterController
 
 		resp.setVersionInfo(converterService.getVersionInfo());
 
-		if (testConvert.isPresent() && testConvert.get())
+		if (testConvert.isPresent() && Boolean.TRUE.equals(testConvert.get()))
 		{
 			PerformanceTimer perfTimer = new PerformanceTimer();
 			perfTimer.start();

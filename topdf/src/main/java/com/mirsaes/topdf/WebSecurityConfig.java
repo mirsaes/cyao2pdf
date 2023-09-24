@@ -7,7 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+
 
 @Configuration
 @EnableWebSecurity
@@ -23,27 +25,27 @@ public class WebSecurityConfig
 	private Boolean securityEnabled;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception
 	{
 		// if security is not enabled, bypass security
 		// otherwise use basic auth
+		httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 		if (Boolean.FALSE == securityEnabled)
 		{
-			http.antMatcher("/live/topdf")//
-					.csrf().disable()//
-					.authorizeRequests().antMatchers("/live/topdf")//
+			httpSecurity.csrf().disable().cors().disable().authorizeHttpRequests().requestMatchers("/live/**")
 					.permitAll();
 		} else
 		{
 			// protect all except previously allowed with username/password
-			http.csrf().disable()
-				.authorizeRequests()
-				.antMatchers("/live/test").permitAll()
+			httpSecurity.csrf().disable().cors().disable()
+				.authorizeHttpRequests()
+				.requestMatchers("/live/test").permitAll()
 				.anyRequest().authenticated()//
 				.and().httpBasic().realmName("cyao2pdf")//
-				.and().logout().permitAll();
+				.and().logout().permitAll(); // don't have sessions for logout : )
 		}
-		return http.build();
+		return httpSecurity.build();
 	}
 
 	@Autowired
