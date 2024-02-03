@@ -85,7 +85,7 @@ convertusers.username.prefix: cyao2pdf
 
 ## Versions
 * 0.0.12
-  * update spring boot to [3.2.2](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes)[Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * update spring boot to [3.2.2](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes) [Support LifeCycle](https://spring.io/projects/spring-boot#support)
   * Ubuntu 22.04
   * LibreOffice 7.3
   * jre 17
