@@ -29,21 +29,36 @@ public class WebSecurityConfig
 	{
 		// if security is not enabled, bypass security
 		// otherwise use basic auth
-		httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		httpSecurity.sessionManagement(sessionManagementConfigurer -> {
+			sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		});
+
+		httpSecurity.csrf(csrfCustomizer -> {
+			csrfCustomizer.disable();
+		}).cors(corsCustomizer -> {
+			corsCustomizer.disable();
+		});
 
 		if (Boolean.FALSE == securityEnabled)
 		{
-			httpSecurity.csrf().disable().cors().disable().authorizeHttpRequests().requestMatchers("/live/**")
-					.permitAll();
+			httpSecurity.authorizeHttpRequests(authorizeHttpRequests -> {
+				authorizeHttpRequests.requestMatchers("/live/**").permitAll();
+			});
 		} else
 		{
 			// protect all except previously allowed with username/password
-			httpSecurity.csrf().disable().cors().disable()
-				.authorizeHttpRequests()
-				.requestMatchers("/live/test").permitAll()
-				.anyRequest().authenticated()//
-				.and().httpBasic().realmName("cyao2pdf")//
-				.and().logout().permitAll(); // don't have sessions for logout : )
+			httpSecurity.authorizeHttpRequests(authorizeHttpRequests -> {
+				authorizeHttpRequests.requestMatchers("/live/test").permitAll()
+				.anyRequest().authenticated();
+			});
+
+			httpSecurity.httpBasic(httpBasicCustomizer -> {
+				httpBasicCustomizer.realmName("cyao2pdf");
+			});
+
+			httpSecurity.logout(logoutCustomizer -> {
+				logoutCustomizer.permitAll(); // don't have sessions for logout : )
+			});
 		}
 		return httpSecurity.build();
 	}
