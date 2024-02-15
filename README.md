@@ -25,7 +25,7 @@ Using curl to convert a file to pdf
  3. launch the docker image
 	
 
-	docker run --rm --init -p 8080:8080 mirsaes/cyao2pdf:beta
+	docker run --rm -d --init -p 8080:8080 mirsaes/cyao2pdf:beta
 
 ```
 	# run with process reaper and local file used as application.properties to override app settings
@@ -84,6 +84,13 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.12
+  * update spring boot to [3.2.2](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes) [Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * Ubuntu 22.04
+  * LibreOffice 7.3
+  * jre 17
+  * spring 3.2
+
 * 0.0.11
   * update spring boot to [3.0.6](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes) [Support LifeCycle](https://spring.io/projects/spring-boot#support)
   * Ubuntu 22.04
