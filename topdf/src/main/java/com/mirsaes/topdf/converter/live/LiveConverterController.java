@@ -2,6 +2,7 @@ package com.mirsaes.topdf.converter.live;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
@@ -84,7 +85,7 @@ class LiveConverterController
 
 		try
 		{
-			URL fileURL = new URL(file);
+			URL fileURL = new URI(file).toURL();
 			urlStream = fileURL.openConnection().getInputStream();
 
 			pdfFileName = converterService.convertToPDF(urlStream, srcExtension);
