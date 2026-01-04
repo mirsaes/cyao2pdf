@@ -7,3 +7,5 @@ topdf/bin/*
 tests.txt
 test.properties
 *.pdf
+
+.vscode

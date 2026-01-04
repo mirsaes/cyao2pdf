@@ -88,7 +88,13 @@ class LiveConverterController
 			URL fileURL = new URI(file).toURL();
 			urlStream = fileURL.openConnection().getInputStream();
 
-			pdfFileName = converterService.convertToPDF(urlStream, srcExtension);
+			if (urlStream == null) {
+				isError = true;
+				logger.warn("unable to open url. url="+file);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			} else {
+				pdfFileName = converterService.convertToPDF(urlStream, srcExtension);
+			}
 		} catch (Exception ex)
 		{
 			isError = true;

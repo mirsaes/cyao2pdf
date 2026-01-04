@@ -15,6 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
@@ -204,7 +205,7 @@ public class ConverterService {
 	 * @return pdfFileName
 	 * @throws UnableToConvertException
 	 */
-	public String convertToPDF(final InputStream inputStream, final String srcExtension)
+	public String convertToPDF(final @NonNull InputStream inputStream, final String srcExtension)
 			throws UnableToConvertException {
 		// use a unique identified to save upload stream to disk
 		final String uuid = UUID.randomUUID().toString();

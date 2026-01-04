@@ -17,29 +17,25 @@ Using curl to convert a file to pdf
 	mvn package
 
  2. build the docker image
+
+	docker build -t mirsaes/cyao2pdf:beta ./
 	
 
- 	docker build -t mirsaes/cyao2pdf:beta ./
-	
+ 3. launch the docker image	with process reaper
 
- 3. launch the docker image
-	
+	```docker run --rm -d --init -p 8080:8080 mirsaes/cyao2pdf:beta```
 
-	docker run --rm -d --init -p 8080:8080 mirsaes/cyao2pdf:beta
+	or run with process reaper and local file used as application.properties to override app settings
 
-```
-	# run with process reaper and local file used as application.properties to override app settings
-	docker run --init --rm -d -p 8080:8080 --mount 'type=bind,src=/full/path/to/sample.properties,dst=/topdf/application.properties' mirsaes/cyao2pdf:beta
-```
+	```docker run --init --rm -d -p 8080:8080 --mount 'type=bind,src=/full/path/to/sample.properties,dst=/topdf/application.properties' mirsaes/cyao2pdf:beta```
+
  4. check health or run basic tests
 
-```
-  curl http://localhost:8080/live/health
+	```curl http://localhost:8080/live/health```
 
-  curl http://localhost:8080/live/health?testConvert=true
+	```curl http://localhost:8080/live/health?testConvert=true```
 
-  curl http://localhost:8080/live/test
-```
+	```curl http://localhost:8080/live/test```
 
  5. use curl to convert a file to pdf
 	
@@ -47,7 +43,7 @@ Using curl to convert a file to pdf
 	curl -X POST -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
 
 
-if configured to use a password use the below, however ssl is not configured on the server
+	if configured to use a password add the user:password as seen below, however ssl is not configured on the service by default
 		
 
 	curl -X POST -u user:password -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
@@ -64,6 +60,18 @@ https://interoperability.blob.core.windows.net/files/MS-DOCX/%5bMS-DOCX%5d-20021
 so an alternative test file, has been specified in example below
 
 	curl -X POST -F "name=test.docx" -F "file=https://msopenspecs.azureedge.net/files/MS-DOCX/%5bMS-DOCX%5d-230815.docx" http://localhost:8080/live/urltopdf > docx.pdf
+
+and ... this also got moved.
+
+Here is an example that takes the 308 value from public page
+https://officeprotocoldocs-f5hpbjgea6b8gneq.b02.azurefd.net/files/MS-DOCX/%5bMS-DOCX%5d-251113.docx
+
+
+  curl -X POST -F "name=test.docx" -F "file=https://officeprotocoldoc.z19.web.core.windows.net/files/MS-DOCX/%5bMS-DOCX%5d-251113.docx" http://localhost:8080/live/urltopdf > docx.pdf
+
+
+Point being, you might need to find your own valid url that has a docx file.
+
 
 This might be useful when using Amazon S3 and [Temporary Credentials via Query String Request Authentication](http://docs.aws.amazon.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth) - but that has not been tested.
 
@@ -84,35 +92,41 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.14
+  * update spring boot from 3.4.2 to [3.5.3](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.5-Release-Notes) - [Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * Ubuntu 24.04
+  * LibreOffice 24.2.7.2
+  * jre 21
+  * spring 3.5
 * 0.0.13
-  * update java from 17 to 21, ubuntu from 22 to 24, and spring boot from 3.2 to [3.4.2](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes) [Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * update java from 17 to 21, ubuntu from 22 to 24, and spring boot from 3.2 to [3.4.2](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes) - [Support LifeCycle](https://spring.io/projects/spring-boot#support)
   * Ubuntu 24.04
   * LibreOffice 24.2.7.2
   * jre 21
   * spring 3.4
 * 0.0.12
-  * update spring boot to [3.2.2](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes) [Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * update spring boot to [3.2.2](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes) - [Support LifeCycle](https://spring.io/projects/spring-boot#support)
   * Ubuntu 22.04
   * LibreOffice 7.3
   * jre 17
   * spring 3.2
 
 * 0.0.11
-  * update spring boot to [3.0.6](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes) [Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * update spring boot to [3.0.6](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Release-Notes) - [Support LifeCycle](https://spring.io/projects/spring-boot#support)
   * Ubuntu 22.04
   * LibreOffice 7.3
   * jre 17
   * spring 3.0
 
 * 0.0.10
-  * update spring boot to [2.7.4](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes) [LTS](https://spring.io/projects/spring-boot#support)
+  * update spring boot to [2.7.4](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes) - [LTS](https://spring.io/projects/spring-boot#support)
   * Ubuntu 22.04
   * LibreOffice 7.3
   * jre 17
   * spring 2.7
 
 * 0.0.9
-  * update spring boot to [2.6.6](https://spring.io/blog/2022/03/31/spring-boot-2-6-6-available-now) [LTS](https://spring.io/projects/spring-boot#support)
+  * update spring boot to [2.6.6](https://spring.io/blog/2022/03/31/spring-boot-2-6-6-available-now) - [LTS](https://spring.io/projects/spring-boot#support)
   * includes security fix for [CVE-2022-22965](https://tanzu.vmware.com/security/cve-2022-22965)
   * however, was not vulnerable as build uses default for generating executable jar rather than a war
   * Ubuntu 20.04
