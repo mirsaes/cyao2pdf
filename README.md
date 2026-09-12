@@ -40,18 +40,18 @@ Using curl to convert a file to pdf
  5. use curl to convert a file to pdf
 	
 
-	curl -X POST -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
+	curl -X POST -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf --output test.pdf
 
 
 	if configured to use a password add the user:password as seen below, however ssl is not configured on the service by default
 		
 
-	curl -X POST -u user:password -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf
+	curl -X POST -u user:password -F "name=test.txt" -F "file=@/home/mirsaes/test.txt" http://localhost:8080/live/topdf --output test.pdf
 	
 
 6. use curl to convert a remote file to a pdf
 
-	curl -X POST -F "name=web.txt" -F "file=https://somesite.com/withatextfile" http://localhost:8080/live/urltopdf
+	curl -X POST -F "name=web.txt" -F "file=https://somesite.com/withatextfile" http://localhost:8080/live/urltopdf --output web.pdf
 
 odd, this blob share apparently had its permissions locked down, oops
 
@@ -92,6 +92,12 @@ convertusers.username.prefix: cyao2pdf
 ```
 
 ## Versions
+* 0.0.15
+  * update spring boot from 3.5.3 to [4.1.1](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.1-Release-Notes) - [Support LifeCycle](https://spring.io/projects/spring-boot#support)
+  * Ubuntu 24.04.5 LTS
+  * LibreOffice 24.2.7.2
+  * jre 25
+  * spring 4.1
 * 0.0.14
   * update spring boot from 3.4.2 to [3.5.3](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.5-Release-Notes) - [Support LifeCycle](https://spring.io/projects/spring-boot#support)
   * Ubuntu 24.04
