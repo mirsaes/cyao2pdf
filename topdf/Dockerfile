@@ -12,7 +12,7 @@ RUN \
 	apt-get update && \
 	apt-get -y upgrade && \
 	apt-get -y --no-install-recommends install libreoffice && \
-	apt-get -y install openjdk-21-jre-headless && \
+	apt-get -y install openjdk-25-jre-headless && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN java -version
